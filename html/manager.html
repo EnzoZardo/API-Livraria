@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livraria</title>
+    <link rel="stylesheet" href="/css/style_manager.css">
+</head>
+
+<body>
+    <div class="container-body">
+        <header>
+            <h1>Livraria do seu Zé</h1>
+        </header>
+        <nav>
+
+        </nav>
+        <aside>
+            <label class="aside-button" for="listagem">Listagem<input type="checkbox" class="side-checkbox" id="listagem" checked></label>
+            <label class="aside-button" for="adicionar">Adição<input type="checkbox" class="side-checkbox" id="adicionar" ></label>
+        </aside>
+        <section id="section-listagem" class="flex">
+            <table id="mytable" class="table table-bordred table-striped">
+                <thead>
+                    <th>Título</th>
+                    <th>ISBN</th>
+                    <th>Autores</th>
+                    <th>Editora</th>
+                    <th>Categoria</th>
+                    <th>Quantidade</th>
+                    <th>Preço</th>
+                </thead>
+                <tbody class="livros-tbody">
+                </tbody>
+            </table>
+        </section>
+        <section id="section-adicionar" action="https://livraria-app.herokuapp.com/api/livros/" style="display: none;">
+            <form id="form-adcionar" method="post" class="grid">
+                <div class="item-adicionar" id="dados">
+                    <div class="row-form">
+                        <div class="cell-form">
+                            <label for="titulo">Título:</label><br>
+                            <input type="text" name="titulo" id="titulo" required>
+                        </div>
+                    </div>
+                    <div class="row-form">
+                        <div class="cell-form">
+                            <label for="isbn">ISBN:</label><br>
+                            <input type="text" name="isbn" id="isbn" pattern="\d{3}-\d{2}-\d{3}-\d{4}-\d" placeholder="XXX-XX-XXX-XXXX-X" required>
+                        </div>
+                        <div class="cell-form">
+                            <label for="preco">Preço:</label><br>
+                            <input type="text" name="preco" id="preco" placeholder="XX.XX" pattern="[0-9]*[.]?[0-9]*" required>
+                        </div>
+                        <div class="cell-form">
+                            <label for="quantidade">Quantidade:</label><br>
+                            <input type="number" name="quantidade" id="quantidade" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="item-adicionar" id="autores">
+                    <div class="row-form">
+                        <div class="cell-form">
+                            <label for="#">Autores</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="item-adicionar" id="editora-categoria">
+                    <div class="row-form">
+                        <div class="cell-form">
+                            <label for="editora">Editora</label>
+                            <select name="editora" id="editora"></select>
+                        </div>
+                        <div class="row-form">
+                            <div class="cell-form">
+                                <label for="editora">Categoria</label>
+                                <select name="categoria" id="categoria"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="item-adicionar" id="envio">
+                    <div class="row-form">
+                        <div class="cell-form">
+                            <input type="submit" value="Enviar">
+                        </div>
+                    </div>
+                    <div class="row-form">
+                        <div class="cell-form">
+                            <input type="reset" value="Cancelar">
+                        </div>
+                    </div>
+                    <div class="row-form">
+                        <div class="cell-form">
+                            <label for="#" id="error"></label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+        </section>
+        <footer>
+
+        </footer>
+    </div>
+    <script src="/jquery/jquery-3.7.0.min.js"></script>
+    <script src="/js/script_manager.js"></script>
+</body>
+
+</html>

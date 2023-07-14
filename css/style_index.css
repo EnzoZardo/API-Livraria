@@ -1,0 +1,21 @@
+body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    height: 6rem;
+    justify-content: space-between;
+}
+
+form h1 {
+    margin: 10px;
+}
