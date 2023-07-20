@@ -2,6 +2,8 @@ const urlParams = new URLSearchParams(window.location.search);
 const access = urlParams.get('access');
 const refresh = urlParams.get('refresh');
 
+var livros = {};
+
 $.get({
     url: 'https://livraria-app.herokuapp.com/api/livros/',
     contentType: 'application/json',
@@ -9,24 +11,39 @@ $.get({
     headers: { 'Authorization': `Bearer ${access}` },
     success: function(data) {
         for (row of data) {
-            console.log();
+            livros[row.id] = {
+                titulo: row.titulo,
+                ISBN: row.ISBN,
+                autores: row.autores,
+                editora: row.editora,
+                categoria: row.categoria,
+                quantidade: row.quantidade,
+                preco: row.preco
+            }
             $('.livros-tbody').append(
-                `<tr>
-                    <td>${row.titulo}</td>
-                    <td>${row.ISBN}</td>
-                    <td>${row.autores.map((el) => { return el.nome }).join(',')}</>
-                    <td>${row.editora.nome}</td>
-                    <td>${row.categoria.nome}</td>
-                    <td>${row.quantidade}</td>
-                    <td>${row.preco}</td>
+                `<tr id="${row.id}">
+                    <td><input type='checkbox'/></td>
+                    <td class="livro-titulo">${row.titulo}</td>
+                    <td class="livro-isbn">${row.ISBN}</td>
+                    <td class="livro-autores">${row.autores.map((el) => { return el.nome }).join(',')}</>
+                    <td class="livro-editora">${row.editora.nome}</td>
+                    <td class="livro-categoria">${row.categoria.nome}</td>
+                    <td class="livro-quantidade">${row.quantidade}</td>
+                    <td class="livro-preco">${row.preco}</td>
                 </tr>`
             );
         }
+        $('#mytable tbody tr').on('click', function() {
+            $(this).find('td input').prop('checked', !$(this).find('td input').is(":checked"));
+            verify_remove();
+            verify_edit();
+        });
     },
     error: function(err) {
         console.log(err);
     }
 });
+
 
 $.get({
     url: 'https://livraria-app.herokuapp.com/api/autores/',
@@ -35,7 +52,8 @@ $.get({
     headers: { 'Authorization': `Bearer ${access}` },
     success: function(data) {
         for (autor of data) {
-            $('#autores').append(
+            console.log(autor)
+            $('.autores').append(
                 `<div class='row-form'><input class='autor-checkbox' type='checkbox' name='${autor.id}-${autor.nome}' id='${autor.id}-${autor.nome}'><label for='${autor.id}-${autor.nome}'>${autor.nome}</label></div>`
             );
         }
@@ -52,7 +70,7 @@ $.get({
     headers: { 'Authorization': `Bearer ${access}` },
     success: function(data) {
         for (editora of data) {
-            $('#editora').append(`
+            $('.editora').append(`
                 <option name='${editora.id}-${editora.nome}' value='${editora.nome}'>${editora.nome}</option>
             `)
         }
@@ -69,7 +87,7 @@ $.get({
     headers: { 'Authorization': `Bearer ${access}` },
     success: function(data) {
         for (categoria of data) {
-            $('#categoria').append(`
+            $('.categoria').append(`
                 <option name='${categoria.id}-${categoria.descricao}' value='${categoria.descricao}'>${categoria.descricao}</option>
             `);
         }
@@ -79,7 +97,7 @@ $.get({
     }
 });
 
-$('#form-adcionar').on('submit', function(event) {
+$('#form-adicionar').on('submit', function(event) {
     event.preventDefault();
     const $this = $(this); // Armazena uma referência ao escopo externo
     if ($('.autor-checkbox').filter(':checked').length < 1) {
@@ -123,3 +141,51 @@ $('aside .side-checkbox').on('change', function() {
         $(this).prop('checked', true);
     }
 });
+
+$(document).ready(function() {
+    $("#check-all").on('change', function() {
+        if ($("#check-all").is(':checked')) {
+            $("table input[type=checkbox]").each(function() {
+                $(this).prop("checked", true);
+            });
+
+        } else {
+            $("table input[type=checkbox]").each(function() {
+                $(this).prop("checked", false);
+            });
+        }
+        verify_remove();
+        verify_edit();
+    });
+});
+
+const verify_remove = () => {
+    document.querySelector("#remove").disabled = !($("table input[type=checkbox]:checked").length > 0);
+}
+
+
+$("#remove").on('click', function() {
+    $("table tbody input[type=checkbox]:checked").each(function() {
+        $this = $(this);
+        id = $this.parent().parent().attr('id');
+        fetch(`https://livraria-app.herokuapp.com/api/livros/${id}/`, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${access}`
+                },
+            })
+            .then($this.parent().parent().remove())
+            .catch(er => {
+                console.log(er);
+            });
+    });
+});
+
+$('#edit').on('click', function() {
+    console.log(livros);
+})
+
+const verify_edit = () => {
+    document.querySelector("#edit").disabled = !($("table input[type=checkbox]:checked").length == 1);
+}

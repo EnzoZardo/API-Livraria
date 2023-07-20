@@ -15,7 +15,8 @@
             <h1>Livraria do seu Zé</h1>
         </header>
         <nav>
-
+            <button id="remove" disabled>Remover</button>
+            <button id="edit" disabled>Editar</button>
         </nav>
         <aside>
             <label class="aside-button" for="listagem">Listagem<input type="checkbox" class="side-checkbox" id="listagem" checked></label>
@@ -24,6 +25,7 @@
         <section id="section-listagem" class="flex">
             <table id="mytable" class="table table-bordred table-striped">
                 <thead>
+                    <td><input type='checkbox' id="check-all" /></td>
                     <th>Título</th>
                     <th>ISBN</th>
                     <th>Autores</th>
@@ -35,9 +37,8 @@
                 <tbody class="livros-tbody">
                 </tbody>
             </table>
-        </section>
-        <section id="section-adicionar" action="https://livraria-app.herokuapp.com/api/livros/" style="display: none;">
-            <form id="form-adcionar" method="post" class="grid">
+            <form id="form-editar" method="post" class="grid">
+
                 <div class="item-adicionar" id="dados">
                     <div class="row-form">
                         <div class="cell-form">
@@ -60,7 +61,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="item-adicionar" id="autores">
+                <div class="item-adicionar autores">
                     <div class="row-form">
                         <div class="cell-form">
                             <label for="#">Autores</label>
@@ -71,12 +72,76 @@
                     <div class="row-form">
                         <div class="cell-form">
                             <label for="editora">Editora</label>
-                            <select name="editora" id="editora"></select>
+                            <select name="editora" class="editora"></select>
                         </div>
                         <div class="row-form">
                             <div class="cell-form">
-                                <label for="editora">Categoria</label>
-                                <select name="categoria" id="categoria"></select>
+                                <label for="categoria">Categoria</label>
+                                <select name="categoria" class="categoria"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="item-adicionar" id="envio">
+                    <div class="row-form">
+                        <div class="cell-form">
+                            <input type="submit" value="Enviar">
+                        </div>
+                    </div>
+                    <div class="row-form">
+                        <div class="cell-form">
+                            <input type="reset" value="Cancelar">
+                        </div>
+                    </div>
+                    <div class="row-form">
+                        <div class="cell-form">
+                            <label for="#" id="error"></label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+        <section id="section-adicionar" action="https://livraria-app.herokuapp.com/api/livros/" style="display: none;">
+            <form id="form-adicionar" method="post" class="grid">
+                <div class="item-adicionar" id="dados">
+                    <div class="row-form">
+                        <div class="cell-form">
+                            <label for="titulo">Título:</label><br>
+                            <input type="text" name="titulo" id="titulo" required>
+                        </div>
+                    </div>
+                    <div class="row-form">
+                        <div class="cell-form">
+                            <label for="isbn">ISBN:</label><br>
+                            <input type="text" name="isbn" id="isbn" pattern="\d{3}-\d{2}-\d{3}-\d{4}-\d" placeholder="XXX-XX-XXX-XXXX-X" required>
+                        </div>
+                        <div class="cell-form">
+                            <label for="preco">Preço:</label><br>
+                            <input type="text" name="preco" id="preco" placeholder="XX.XX" pattern="[0-9]*[.]?[0-9]*" required>
+                        </div>
+                        <div class="cell-form">
+                            <label for="quantidade">Quantidade:</label><br>
+                            <input type="number" name="quantidade" id="quantidade" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="item-adicionar autores">
+                    <div class="row-form">
+                        <div class="cell-form">
+                            <label for="#">Autores</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="item-adicionar" id="editora-categoria">
+                    <div class="row-form">
+                        <div class="cell-form">
+                            <label for="editora">Editora</label>
+                            <select name="editora" class="editora"></select>
+                        </div>
+                        <div class="row-form">
+                            <div class="cell-form">
+                                <label for="categoria">Categoria</label>
+                                <select name="categoria" class="categoria"></select>
                             </div>
                         </div>
                     </div>
