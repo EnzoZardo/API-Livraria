@@ -178,8 +178,8 @@ aside label:has(input[type='checkbox']:checked) {
 }
 
 .grid {
-    /* width: 95%; */
-    /* height: 95%; */
+    width: 95%;
+    height: 95%;
     display: grid;
     gap: .7rem;
     grid-template-columns: repeat(5, 1fr);
@@ -235,4 +235,36 @@ div .row-form label {
     height: 40rem;
     background-color: #bebebe;
     border-radius: 7px;
+}
+
+#edit-dados {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    grid-area: d;
+}
+
+#edit-dados .row-form {
+    display: flex;
+    flex-direction: row;
+    align-content: space-around;
+    justify-content: space-evenly;
+}
+
+#edit-dados label {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.autores {
+    grid-area: a;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+#edit-editora-categoria {
+    grid-area: e;
+}
+
+#edit-envio {
+    grid-area: b;
 }

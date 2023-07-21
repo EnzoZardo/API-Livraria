@@ -1,15 +1,18 @@
-const urlParams = new URLSearchParams(window.location.search);
-const access = urlParams.get('access');
-const refresh = urlParams.get('refresh');
-
+var urlParams = new URLSearchParams(window.location.search);
+var access = urlParams.get('access');
+var refresh = urlParams.get('refresh');
 var livros = {};
 
-$.get({
-    url: 'https://livraria-app.herokuapp.com/api/livros/',
-    contentType: 'application/json',
-    data: '',
-    headers: { 'Authorization': `Bearer ${access}` },
-    success: function(data) {
+
+const getLivros = async() => {
+    try {
+        const data = await $.get({
+            url: 'https://livraria-app.herokuapp.com/api/livros/',
+            contentType: 'application/json',
+            data: '',
+            headers: { 'Authorization': `Bearer ${access}` },
+        });
+        $('.livros-tbody').html('');
         for (row of data) {
             livros[row.id] = {
                 titulo: row.titulo,
@@ -33,69 +36,114 @@ $.get({
                 </tr>`
             );
         }
+
         $('#mytable tbody tr').on('click', function() {
             $(this).find('td input').prop('checked', !$(this).find('td input').is(":checked"));
             verify_remove();
             verify_edit();
         });
-    },
-    error: function(err) {
+    } catch (err) {
+        if (err.status == 401) {
+            await getRefresh();
+            alert("Tente novamente");
+        }
         console.log(err);
     }
-});
+};
 
+const getAutores = async() => {
+    try {
+        const data = await $.get({
+            url: 'https://livraria-app.herokuapp.com/api/autores/',
+            contentType: 'application/json',
+            data: '',
+            headers: { 'Authorization': `Bearer ${access}` },
+        });
 
-$.get({
-    url: 'https://livraria-app.herokuapp.com/api/autores/',
-    contentType: 'application/json',
-    data: '',
-    headers: { 'Authorization': `Bearer ${access}` },
-    success: function(data) {
         for (autor of data) {
-            console.log(autor)
             $('.autores').append(
-                `<div class='row-form'><input class='autor-checkbox' type='checkbox' name='${autor.id}-${autor.nome}' id='${autor.id}-${autor.nome}'><label for='${autor.id}-${autor.nome}'>${autor.nome}</label></div>`
+                `<div class='row-form'><input class='autor-checkbox' type='checkbox' name='${autor.id}-${autor.nome}-edit' id='${autor.id}-${autor.nome}'><label for='${autor.id}-${autor.nome}'>${autor.nome}</label></div>`
             );
         }
-    },
-    error: function(err) {
+    } catch (err) {
+        if (err.status == 401) {
+            await getRefresh();
+            alert("Tente novamente");
+        }
         console.log(err);
     }
-});
+};
 
-$.get({
-    url: 'https://livraria-app.herokuapp.com/api/editoras/',
-    contentType: 'application/json',
-    data: '',
-    headers: { 'Authorization': `Bearer ${access}` },
-    success: function(data) {
+const getEditoras = async() => {
+    try {
+        const data = await $.get({
+            url: 'https://livraria-app.herokuapp.com/api/editoras/',
+            contentType: 'application/json',
+            data: '',
+            headers: { 'Authorization': `Bearer ${access}` },
+        });
+
         for (editora of data) {
             $('.editora').append(`
-                <option name='${editora.id}-${editora.nome}' value='${editora.nome}'>${editora.nome}</option>
-            `)
-        }
-    },
-    error: function(err) {
-        console.log(err);
-    }
-});
-
-$.get({
-    url: 'https://livraria-app.herokuapp.com/api/categorias/',
-    contentType: 'application/json',
-    data: '',
-    headers: { 'Authorization': `Bearer ${access}` },
-    success: function(data) {
-        for (categoria of data) {
-            $('.categoria').append(`
-                <option name='${categoria.id}-${categoria.descricao}' value='${categoria.descricao}'>${categoria.descricao}</option>
+                <option name='${editora.id}-${editora.nome}-edit' value='${editora.id}'>${editora.nome}</option>
             `);
         }
-    },
-    error: function(err) {
+    } catch (err) {
+        if (err.status == 401) {
+            await getRefresh();
+            alert("Tente novamente");
+        }
         console.log(err);
     }
-});
+};
+
+const getCategorias = async() => {
+    try {
+        const data = await $.get({
+            url: 'https://livraria-app.herokuapp.com/api/categorias/',
+            contentType: 'application/json',
+            data: '',
+            headers: { 'Authorization': `Bearer ${access}` },
+        });
+
+        for (categoria of data) {
+            $('.categoria').append(`
+                <option name='${categoria.id}-${categoria.descricao}-edit' value='${categoria.id}'>${categoria.descricao}</option>
+            `);
+        }
+    } catch (err) {
+        if (err.status == 401) {
+            await getRefresh();
+            alert("Tente novamente");
+        }
+        console.log(err);
+    }
+};
+
+const getRefresh = async() => {
+    try {
+        const response = await fetch('https://livraria-app.herokuapp.com/api/token/refresh/', {
+            body: JSON.stringify({
+                "refresh": refresh
+            }),
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            access = data.access;
+        } else {
+            const errorData = await response.json();
+            throw new Error(errorData.error);
+        }
+    } catch (error) {
+        alert(error);
+    }
+}
+
 
 $('#form-adicionar').on('submit', function(event) {
     event.preventDefault();
@@ -104,16 +152,16 @@ $('#form-adicionar').on('submit', function(event) {
         $('#error').text('Selecione pelo menos um autor.');
         return;
     }
-    fetch($(this).action(), {
+    fetch($(this).attr('action'), {
             body: JSON.stringify({
-                'titulo': $('[name="titulo"]').val(),
-                'ISBN': $('[name="isbn"]').val(),
-                'quantidade': Number.parseInt($('[name="quantidade"]').val()),
-                'preco': Number.parseFloat($('[name="preco"]').val()),
-                'categoria': Number.parseInt($('[name="categoria"] option:selected').attr('name').split('-')[0]),
-                'editora': Number.parseInt($('[name="editora"] option:selected').attr('name').split('-')[0]),
-                'autores': $('.autor-checkbox').filter(function() {
-                    return $(`.autor-checkbox`).is(':checked');
+                'titulo': $(this).find('[name="titulo"]').val(),
+                'ISBN': $(this).find('[name="isbn"]').val(),
+                'quantidade': Number.parseInt($(this).find('[name="quantidade"]').val()),
+                'preco': Number.parseFloat($(this).find('[name="preco"]').val()),
+                'categoria': Number.parseInt($(this).find('[name="categoria"] option:selected').attr('name').split('-')[0]),
+                'editora': Number.parseInt($(this).find('[name="editora"] option:selected').attr('name').split('-')[0]),
+                'autores': $('#form-adicionar .autor-checkbox:checked').filter(function() {
+                    return this.checked;
                 }).map(function() {
                     return Number.parseInt((this.getAttribute('name')).split('-')[0]);
                 }).get()
@@ -125,12 +173,14 @@ $('#form-adicionar').on('submit', function(event) {
             }
         })
         .then($this[0].reset())
-        .catch(er => {
+        .catch((er) => {
+            if (er.status == 401) {
+                getRefresh();
+                alert("Tente novamente");
+            }
             $('#error').text(er);
         })
 });
-
-
 
 $('aside .side-checkbox').on('change', function() {
     if ($(this).is(':checked')) {
@@ -140,6 +190,7 @@ $('aside .side-checkbox').on('change', function() {
     } else {
         $(this).prop('checked', true);
     }
+    getLivros();
 });
 
 $(document).ready(function() {
@@ -158,11 +209,6 @@ $(document).ready(function() {
         verify_edit();
     });
 });
-
-const verify_remove = () => {
-    document.querySelector("#remove").disabled = !($("table input[type=checkbox]:checked").length > 0);
-}
-
 
 $("#remove").on('click', function() {
     $("table tbody input[type=checkbox]:checked").each(function() {
@@ -183,9 +229,79 @@ $("#remove").on('click', function() {
 });
 
 $('#edit').on('click', function() {
-    console.log(livros);
+    meuLivro = livros[$("table tbody input[type=checkbox]:checked").parent().parent().attr('id')];
+    console.log(meuLivro)
+    $form = $('#form-editar');
+    $form.css('display', 'grid');
+    $form.find('[name=edit-titulo]').val(meuLivro.titulo);
+    $form.find('[name=edit-isbn]').val(meuLivro.ISBN);
+    $form.find('[name=edit-preco]').val(meuLivro.preco);
+    $form.find('[name=edit-quantidade]').val(meuLivro.quantidade);
+    meuLivro.autores.forEach(el => {
+        $form.find(`[name='${el.id}-${el.nome}-edit']`).prop('checked', true);
+    });
+    $form.find('[name=edit-editora]').val(meuLivro.editora.id);
+    $form.find('[name=edit-categoria]').val(meuLivro.categoria.id);
+});
+
+$('#form-editar').on('submit', function(event) {
+    event.preventDefault();
+    $this = $(this);
+    id = $("table tbody input[type=checkbox]:checked").parent().parent().attr('id');
+    meuLivro = livros[id];
+    console.log($this.find('#form-editar .autor-checkbox').filter(function() {
+        return this.checked;
+    }).map(function() {
+        return Number.parseInt((this.getAttribute('name')).split('-')[0]);
+    }).get())
+    fetch($(this).attr('action') + `${id}/`, {
+            body: JSON.stringify({
+                'titulo': $('[name="edit-titulo"]').val(),
+                'ISBN': $('[name="edit-isbn"]').val(),
+                'quantidade': Number.parseInt($('[name="edit-quantidade"]').val()),
+                'preco': Number.parseFloat($('[name="edit-preco"]').val()),
+                'categoria': Number.parseInt($('[name="edit-categoria"] option:selected').attr('name').split('-')[0]),
+                'editora': Number.parseInt($('[name="edit-editora"] option:selected').attr('name').split('-')[0]),
+                'autores': $('#form-editar .autor-checkbox').filter(function() {
+                    return this.checked;
+                }).map(function() {
+                    return Number.parseInt((this.getAttribute('name')).split('-')[0]);
+                }).get()
+            }),
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${access}`
+            }
+        })
+        .then(() => {
+            $this.css('display', 'none');
+            getLivros();
+        })
+        .catch(er => {
+
+            console.log(er);
+        })
+})
+
+$('#form-editar input[type=reset]').on('click', function(event) {
+    event.preventDefault();
+    $("#form-editar").css('display', 'none');
 })
 
 const verify_edit = () => {
     document.querySelector("#edit").disabled = !($("table input[type=checkbox]:checked").length == 1);
 }
+
+const verify_remove = () => {
+    document.querySelector("#remove").disabled = !($("table input[type=checkbox]:checked").length > 0);
+}
+
+const main = async() => {
+    await getLivros();
+    await getAutores();
+    await getEditoras();
+    await getCategorias();
+};
+
+main();

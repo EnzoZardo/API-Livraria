@@ -37,52 +37,51 @@
                 <tbody class="livros-tbody">
                 </tbody>
             </table>
-            <form id="form-editar" method="post" class="grid">
-
-                <div class="item-adicionar" id="dados">
+            <form id="form-editar" action="https://livraria-app.herokuapp.com/api/livros/" method="post" class="grid">
+                <div class="item-adicionar" id="edit-dados">
                     <div class="row-form">
                         <div class="cell-form">
-                            <label for="titulo">Título:</label><br>
-                            <input type="text" name="titulo" id="titulo" required>
+                            <label for="edit-titulo">Título:</label><br>
+                            <input type="text" name="edit-titulo" id="edit-titulo" required>
                         </div>
                     </div>
                     <div class="row-form">
                         <div class="cell-form">
-                            <label for="isbn">ISBN:</label><br>
-                            <input type="text" name="isbn" id="isbn" pattern="\d{3}-\d{2}-\d{3}-\d{4}-\d" placeholder="XXX-XX-XXX-XXXX-X" required>
+                            <label for="edit-isbn">ISBN:</label><br>
+                            <input type="text" name="edit-isbn" id="edit-isbn" pattern="\d{3}-\d{2}-\d{3}-\d{4}-\d" placeholder="XXX-XX-XXX-XXXX-X" required>
                         </div>
                         <div class="cell-form">
-                            <label for="preco">Preço:</label><br>
-                            <input type="text" name="preco" id="preco" placeholder="XX.XX" pattern="[0-9]*[.]?[0-9]*" required>
+                            <label for="edit-preco">Preço:</label><br>
+                            <input type="text" name="edit-preco" id="edit-preco" placeholder="XX.XX" pattern="[0-9]*[.]?[0-9]*" required>
                         </div>
                         <div class="cell-form">
-                            <label for="quantidade">Quantidade:</label><br>
-                            <input type="number" name="quantidade" id="quantidade" required>
+                            <label for="edit-quantidade">Quantidade:</label><br>
+                            <input type="number" name="edit-quantidade" id="edit-quantidade" required>
                         </div>
                     </div>
                 </div>
                 <div class="item-adicionar autores">
                     <div class="row-form">
                         <div class="cell-form">
-                            <label for="#">Autores</label>
+                            <label for="edit-autores">Autores</label>
                         </div>
                     </div>
                 </div>
-                <div class="item-adicionar" id="editora-categoria">
+                <div class="item-adicionar" id="edit-editora-categoria">
                     <div class="row-form">
                         <div class="cell-form">
-                            <label for="editora">Editora</label>
-                            <select name="editora" class="editora"></select>
+                            <label for="edit-editora">Editora</label>
+                            <select name="edit-editora" class="editora"></select>
                         </div>
                         <div class="row-form">
                             <div class="cell-form">
-                                <label for="categoria">Categoria</label>
-                                <select name="categoria" class="categoria"></select>
+                                <label for="edit-categoria">Categoria</label>
+                                <select name="edit-categoria" class="categoria"></select>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="item-adicionar" id="envio">
+                <div class="item-adicionar" id="edit-envio">
                     <div class="row-form">
                         <div class="cell-form">
                             <input type="submit" value="Enviar">
@@ -95,14 +94,15 @@
                     </div>
                     <div class="row-form">
                         <div class="cell-form">
-                            <label for="#" id="error"></label>
+                            <label for="edit-error" id="error"></label>
                         </div>
                     </div>
                 </div>
             </form>
+
         </section>
-        <section id="section-adicionar" action="https://livraria-app.herokuapp.com/api/livros/" style="display: none;">
-            <form id="form-adicionar" method="post" class="grid">
+        <section id="section-adicionar" style="display: none;">
+            <form id="form-adicionar" action="https://livraria-app.herokuapp.com/api/livros/" method="post" class="grid">
                 <div class="item-adicionar" id="dados">
                     <div class="row-form">
                         <div class="cell-form">
