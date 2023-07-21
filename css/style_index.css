@@ -36,7 +36,7 @@ h1 {
 }
 
 input[type="submit"] {
-    background-color: #007BFF;
+    background-color: #535353;
     color: #fff;
     border: none;
     border-radius: 3px;
@@ -47,7 +47,7 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: #bebebe;
 }
 
 #error {
