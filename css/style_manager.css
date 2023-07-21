@@ -268,3 +268,32 @@ div .row-form label {
 #edit-envio {
     grid-area: b;
 }
+
+button,
+form input[type=submit],
+form input[type=reset] {
+    height: 1.5rem;
+    background-color: #bebebe;
+    border: none;
+    border-radius: 7px;
+    margin: 1rem;
+    transition: background-color 1s;
+}
+
+button:hover,
+form input[type=submit]:hover,
+form input[type=reset]:hover {
+    background-color: #7b7b7b;
+}
+
+nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+header h1 {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin-left: 2rem;
+}

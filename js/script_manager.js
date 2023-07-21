@@ -190,6 +190,8 @@ $('aside .side-checkbox').on('change', function() {
     } else {
         $(this).prop('checked', true);
     }
+    document.querySelector("#edit").disabled = true;
+    document.querySelector("#remove").disabled = true;
     getLivros();
 });
 
@@ -230,13 +232,16 @@ $("#remove").on('click', function() {
 
 $('#edit').on('click', function() {
     meuLivro = livros[$("table tbody input[type=checkbox]:checked").parent().parent().attr('id')];
-    console.log(meuLivro)
+    console.log(meuLivro.autores)
     $form = $('#form-editar');
     $form.css('display', 'grid');
     $form.find('[name=edit-titulo]').val(meuLivro.titulo);
     $form.find('[name=edit-isbn]').val(meuLivro.ISBN);
     $form.find('[name=edit-preco]').val(meuLivro.preco);
     $form.find('[name=edit-quantidade]').val(meuLivro.quantidade);
+    $form.find(`input[type=checkbox]`).each(function() {
+        $(this).prop('checked', false);
+    })
     meuLivro.autores.forEach(el => {
         $form.find(`[name='${el.id}-${el.nome}-edit']`).prop('checked', true);
     });
