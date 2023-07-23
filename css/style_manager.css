@@ -1,3 +1,7 @@
+* {
+    user-select: none;
+}
+
 body {
     padding: 0;
     margin: 0;
@@ -181,7 +185,7 @@ aside label:has(input[type='checkbox']:checked) {
     width: 95%;
     height: 95%;
     display: grid;
-    gap: .7rem;
+    gap: .5rem;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
     grid-template-areas: "d d d d d" "d d d d d" "a a a e e" "a a a e e" "a a a b b";
@@ -190,8 +194,8 @@ aside label:has(input[type='checkbox']:checked) {
 .grid .item-adicionar {
     width: 100%;
     height: 100%;
-    border-radius: 10px;
     border: solid #505050 2px;
+    background-color: rgba(12, 12, 12, 0.1);
 }
 
 #dados {

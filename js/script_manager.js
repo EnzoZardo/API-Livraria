@@ -37,8 +37,8 @@ const getLivros = async() => {
             );
         }
 
-        $('#mytable tbody tr').on('click', function() {
-            $(this).find('td input').prop('checked', !$(this).find('td input').is(":checked"));
+        $('#mytable tbody tr td:not(td:has(input))').on('click', function() {
+            $(this).parent().find('td input').prop('checked', !$(this).parent().find('td input').is(":checked"));
             verify_remove();
             verify_edit();
         });
@@ -254,11 +254,6 @@ $('#form-editar').on('submit', function(event) {
     $this = $(this);
     id = $("table tbody input[type=checkbox]:checked").parent().parent().attr('id');
     meuLivro = livros[id];
-    console.log($this.find('#form-editar .autor-checkbox').filter(function() {
-        return this.checked;
-    }).map(function() {
-        return Number.parseInt((this.getAttribute('name')).split('-')[0]);
-    }).get())
     fetch($(this).attr('action') + `${id}/`, {
             body: JSON.stringify({
                 'titulo': $('[name="edit-titulo"]').val(),
@@ -284,7 +279,6 @@ $('#form-editar').on('submit', function(event) {
             getLivros();
         })
         .catch(er => {
-
             console.log(er);
         })
 })
